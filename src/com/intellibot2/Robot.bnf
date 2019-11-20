@@ -1,0 +1,36 @@
+{
+  parserClass="com.intellibot2.RobotParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Robot"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.intellibot2.psi"
+  psiImplPackage="com.intellibot2.psi.impl"
+
+  elementTypeHolderClass="com.intellibot2.psi.RobotTypes"
+  elementTypeClass="com.intellibot2.psi.RobotElementType"
+  tokenTypeClass="com.intellibot2.psi.RobotTokenType"
+
+  tokens=[
+      COMMENT="COMMENT"
+      NEWLINE="NEWLINE"
+      ERROR="ERROR"
+  ]
+}
+
+test_data ::= ( settings_table | variables_table | testcases_table | keywords_table ) *
+settings_table ::= SETTINGS_HEADER setting_statement*
+setting_statement ::= SETTING ARGUMENT*
+
+variables_table ::= VARIABLES_HEADER variable_statement*
+variable_statement ::= VARIABLE ARGUMENT*
+                   |   ERROR
+
+testcases_table ::= TESTCASE_HEADER testcase_statement*
+testcase_statement ::= TESTCASE ARGUMENT*  {pin=1 recoverWhile=error_recover}
+
+keywords_table ::= KEYWORDS_HEADER keywords_statement*
+keywords_statement ::= KEYWORD ARGUMENT*
+
+private error_recover ::= !(SETTINGS_HEADER | VARIABLES_HEADER | TESTCASE_HEADER | VARIABLE | SETTING)
